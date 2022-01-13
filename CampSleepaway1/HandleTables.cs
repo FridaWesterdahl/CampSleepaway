@@ -12,12 +12,6 @@ namespace CampSleepaway1
 {
     public class HandleTables
     {
-       /* public SqlConnection dbcon;
-        public HandleTables()
-        {
-            string connectionString = "Data Source=LAPTOP-MOP66LEC\\SQLEXPRESS;Initial Catalog=CS_Frida_Westerdahl;Integrated Security=True";
-            dbcon = new SqlConnection(connectionString);
-        }*/
         public static void InsertCamperToTable()
         {
             using (var db = new EFContext())
@@ -40,11 +34,23 @@ namespace CampSleepaway1
                 db.SaveChanges();
                 Console.WriteLine("Camper is added!");
             }
-            
-           
-            
-
         }
+
+        public static void ReadCampers()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("All registered campers:\n");
+                List<Camper> campers = db.Campers.ToList();
+                foreach (Camper c in campers)
+                {
+                    Console.WriteLine($"Id {c.Id}: {c.FirstName} {c.LastName} ");
+                }
+            }
+            return;
+        }
+
+
         /* static void UpdateCamper()
          {
              using (var db = new EFContext())

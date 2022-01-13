@@ -27,7 +27,7 @@ namespace CampSleepaway1
             Logo();
             Console.WriteLine("What do you want to do? Enter the number below: \n" +
                 "[1] Register a new camper\n" +
-                "[2] Delete a customer\n" +
+                "[2] Read all registered campers that has visited\n" +
                 "[3] Update the address for a employee\n" +
                 "[4] Show sales for a country of your choosing\n" +
                 "[5] Make a new order\n" +
@@ -39,11 +39,11 @@ namespace CampSleepaway1
                     HandleTables.InsertCamperToTable();
                     Console.ReadLine();
                     break;
-               /* case 2:
-                    _handler.DeleteCustomer();
+                case 2:
+                    HandleTables.ReadCampers();
                     Console.ReadLine();
                     break;
-                case 3:
+                /*case 3:
                     _handler.UpdateEmployee();
                     Console.ReadLine();
                     break;

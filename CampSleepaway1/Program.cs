@@ -11,12 +11,18 @@ namespace CampSleepaway1
     {
         static void Main(string[] args)
         {
+            LoadDB loadDB = new LoadDB();
+            //loadDB.InsertCamper();
+            //loadDB.InsertCounselor();
+            //loadDB.InsertCabin();
+            //loadDB.InsertNextOfKin();
+            //loadDB.ReadCampers();
+
             //Menu menu = new Menu();
             //menu.ShowMenu();
 
-            LoadDB loadDB = new LoadDB();
-            loadDB.InsertCamper();
-            
+
+
         }
     }
 
