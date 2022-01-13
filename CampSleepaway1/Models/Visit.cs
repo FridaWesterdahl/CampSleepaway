@@ -11,7 +11,7 @@ namespace CampSleepaway1.Models
     [Table("Visit")]
     public class Visit
     {
-        [Column("Id")]
+        [Column("VisitId")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
@@ -22,14 +22,13 @@ namespace CampSleepaway1.Models
         public DateTime ArrivalDates { get; set; }
 
         [Column("DepartureDate")]
-        [Required]
         public DateTime DepartureDates { get; set; }
 
         public int MaxVisitTime { get; set; }
         public DateTimeOffset EarliestVisit { get; set; }
         public DateTimeOffset LatestVisit { get; set; }
 
-        [ForeignKey("Id")]
+        [ForeignKey("NextOfKinId")]
         public virtual List<NextOfKin> NextOfKins { get; set; }
     }    
 }

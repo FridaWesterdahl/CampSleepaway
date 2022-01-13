@@ -14,9 +14,9 @@ namespace CampSleepaway1
             using (var db = new EFContext())
             {
                 Camper camper = new Camper();
-                camper.FirstName = "Frida";
-                camper.LastName = "Westerdahl";
-                camper.Age = 26;
+                camper.FirstName = "Fredrik";
+                camper.LastName = "Lam";
+                camper.Age = 28;
                 
                 db.Add(camper);
                 db.SaveChanges();

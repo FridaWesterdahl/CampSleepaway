@@ -11,7 +11,7 @@ namespace CampSleepaway1.Models
     [Table ("NextOfKins")]
     public class NextOfKin
     {
-        [Column("Id")]
+        [Column("NextOfKinId")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
@@ -32,7 +32,7 @@ namespace CampSleepaway1.Models
         [StringLength(20)]
         public string PhoneNumber { get; set; }
 
-        [ForeignKey("Id")]
+        [ForeignKey("CamperId")]
         public virtual List<Camper> Campers { get; set; }
     }
 }

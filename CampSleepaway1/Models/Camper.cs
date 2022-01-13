@@ -11,7 +11,7 @@ namespace CampSleepaway1.Models
     [Table("Campers")]
     public class Camper
     {
-        [Column("Id")]
+        [Column("CamperId")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
@@ -31,7 +31,7 @@ namespace CampSleepaway1.Models
         [Required]
         public int Age { get; set; }
 
-        [ForeignKey("Id")]
+        [ForeignKey("VisitId")]
         public virtual List<Visit> Visits { get; set; }
     }
 }

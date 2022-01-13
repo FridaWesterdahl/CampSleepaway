@@ -11,7 +11,7 @@ namespace CampSleepaway1.Models
     [Table("Cabins")]
     public class Cabin
     {
-        [Column("Id")]
+        [Column("CabinId")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
@@ -25,9 +25,9 @@ namespace CampSleepaway1.Models
         public int CapacityCampers { get; set; }
         public int CapacityCounselor { get; set; }
 
-        [ForeignKey("Id")]
+        [ForeignKey("CamperStayId")]
         public virtual List<CamperStay> CamperStays { get; set; }
-        [ForeignKey("Id")]
+        [ForeignKey("CounselorStayId")]
         public virtual List<CounselorStay> CounselorStays { get; set; }
     }
 }

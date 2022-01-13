@@ -22,42 +22,12 @@ namespace CampSleepaway1.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("CabinCamperStay", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CabinCamperStay");
-                });
-
-            modelBuilder.Entity("CabinCounselorStay", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CabinCounselorStay");
-                });
-
-            modelBuilder.Entity("CamperNextOfKin", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CamperNextOfKin");
-                });
-
             modelBuilder.Entity("CampSleepaway1.Models.Cabin", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("CabinId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
@@ -83,11 +53,17 @@ namespace CampSleepaway1.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("CamperId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("Age")
                         .HasColumnType("int")
                         .HasColumnName("Age");
+
+                    b.Property<int?>("CamperId")
+                        .HasColumnType("int")
+                        .HasColumnName("CamperId1");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -103,6 +79,8 @@ namespace CampSleepaway1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CamperId");
+
                     b.ToTable("Campers");
                 });
 
@@ -111,7 +89,7 @@ namespace CampSleepaway1.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("CamperStayId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
@@ -119,11 +97,17 @@ namespace CampSleepaway1.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("ArrivalDate");
 
+                    b.Property<int?>("CamperStayId")
+                        .HasColumnType("int")
+                        .HasColumnName("CamperStayId1");
+
                     b.Property<DateTime>("DepartureDates")
                         .HasColumnType("datetime2")
                         .HasColumnName("DepartureDate");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CamperStayId");
 
                     b.ToTable("CamperStays");
                 });
@@ -133,7 +117,13 @@ namespace CampSleepaway1.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("CounselorId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("CounselorId")
+                        .HasColumnType("int")
+                        .HasColumnName("CounselorId1");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -155,6 +145,8 @@ namespace CampSleepaway1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CounselorId");
+
                     b.ToTable("Counselors");
                 });
 
@@ -163,7 +155,7 @@ namespace CampSleepaway1.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("CounselorStayId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
@@ -171,11 +163,17 @@ namespace CampSleepaway1.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("ArrivalDate");
 
+                    b.Property<int?>("CounselorStayId")
+                        .HasColumnType("int")
+                        .HasColumnName("CounselorStayId1");
+
                     b.Property<DateTime>("DepartureDates")
                         .HasColumnType("datetime2")
                         .HasColumnName("DepartureDate");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CounselorStayId");
 
                     b.ToTable("CounselorStays");
                 });
@@ -185,7 +183,9 @@ namespace CampSleepaway1.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("NextOfKinId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -199,6 +199,10 @@ namespace CampSleepaway1.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("LastName");
 
+                    b.Property<int?>("NextOfKinId")
+                        .HasColumnType("int")
+                        .HasColumnName("NextOfKinId1");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -206,6 +210,8 @@ namespace CampSleepaway1.Migrations
                         .HasColumnName("PhoneNumber");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NextOfKinId");
 
                     b.ToTable("NextOfKins");
                 });
@@ -215,7 +221,7 @@ namespace CampSleepaway1.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("VisitId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
@@ -236,81 +242,73 @@ namespace CampSleepaway1.Migrations
                     b.Property<int>("MaxVisitTime")
                         .HasColumnType("int");
 
+                    b.Property<int?>("VisitId")
+                        .HasColumnType("int")
+                        .HasColumnName("VisitId1");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("VisitId");
+
                     b.ToTable("Visit");
-                });
-
-            modelBuilder.Entity("CabinCamperStay", b =>
-                {
-                    b.HasOne("CampSleepaway1.Models.Cabin", null)
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CampSleepaway1.Models.CamperStay", null)
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CabinCounselorStay", b =>
-                {
-                    b.HasOne("CampSleepaway1.Models.Cabin", null)
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CampSleepaway1.Models.CounselorStay", null)
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CamperNextOfKin", b =>
-                {
-                    b.HasOne("CampSleepaway1.Models.Camper", null)
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CampSleepaway1.Models.NextOfKin", null)
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CampSleepaway1.Models.Camper", b =>
                 {
                     b.HasOne("CampSleepaway1.Models.CamperStay", null)
                         .WithMany("Campers")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CamperId");
+
+                    b.HasOne("CampSleepaway1.Models.NextOfKin", null)
+                        .WithMany("Campers")
+                        .HasForeignKey("CamperId");
+                });
+
+            modelBuilder.Entity("CampSleepaway1.Models.CamperStay", b =>
+                {
+                    b.HasOne("CampSleepaway1.Models.Cabin", null)
+                        .WithMany("CamperStays")
+                        .HasForeignKey("CamperStayId");
                 });
 
             modelBuilder.Entity("CampSleepaway1.Models.Counselor", b =>
                 {
                     b.HasOne("CampSleepaway1.Models.CounselorStay", null)
                         .WithMany("Counselors")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CounselorId");
+                });
+
+            modelBuilder.Entity("CampSleepaway1.Models.CounselorStay", b =>
+                {
+                    b.HasOne("CampSleepaway1.Models.Cabin", null)
+                        .WithMany("CounselorStays")
+                        .HasForeignKey("CounselorStayId");
                 });
 
             modelBuilder.Entity("CampSleepaway1.Models.NextOfKin", b =>
                 {
                     b.HasOne("CampSleepaway1.Models.Visit", null)
                         .WithMany("NextOfKins")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("NextOfKinId");
+                });
+
+            modelBuilder.Entity("CampSleepaway1.Models.Visit", b =>
+                {
+                    b.HasOne("CampSleepaway1.Models.Camper", null)
+                        .WithMany("Visits")
+                        .HasForeignKey("VisitId");
+                });
+
+            modelBuilder.Entity("CampSleepaway1.Models.Cabin", b =>
+                {
+                    b.Navigation("CamperStays");
+
+                    b.Navigation("CounselorStays");
+                });
+
+            modelBuilder.Entity("CampSleepaway1.Models.Camper", b =>
+                {
+                    b.Navigation("Visits");
                 });
 
             modelBuilder.Entity("CampSleepaway1.Models.CamperStay", b =>
@@ -321,6 +319,11 @@ namespace CampSleepaway1.Migrations
             modelBuilder.Entity("CampSleepaway1.Models.CounselorStay", b =>
                 {
                     b.Navigation("Counselors");
+                });
+
+            modelBuilder.Entity("CampSleepaway1.Models.NextOfKin", b =>
+                {
+                    b.Navigation("Campers");
                 });
 
             modelBuilder.Entity("CampSleepaway1.Models.Visit", b =>

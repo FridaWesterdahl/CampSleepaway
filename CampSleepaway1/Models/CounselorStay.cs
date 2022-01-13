@@ -11,7 +11,7 @@ namespace CampSleepaway1.Models
     [Table("CounselorStays")]
     public class CounselorStay
     {
-        [Column("Id")]
+        [Column("CounselorStayId")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
@@ -22,10 +22,9 @@ namespace CampSleepaway1.Models
         public DateTime ArrivalDates { get; set; }
 
         [Column("DepartureDate")]
-        [Required]
         public DateTime DepartureDates { get; set; }
 
-        [ForeignKey("Id")]
+        [ForeignKey("CounselorId")]
         public virtual List<Counselor> Counselors { get; set; }
     }
 }

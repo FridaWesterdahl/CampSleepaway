@@ -11,7 +11,7 @@ namespace CampSleepaway1.Models
     [Table ("Counselors")]
     public class Counselor
     {
-        [Column("Id")]
+        [Column("CounselorId")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
