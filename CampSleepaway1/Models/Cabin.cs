@@ -25,9 +25,8 @@ namespace CampSleepaway1.Models
         public int CapacityCampers { get; set; }
         public int CapacityCounselor { get; set; }
 
-        [ForeignKey("CamperStayId")]
         public virtual List<CamperStay> CamperStays { get; set; }
-        [ForeignKey("CounselorStayId")]
         public virtual List<CounselorStay> CounselorStays { get; set; }
+
     }
 }

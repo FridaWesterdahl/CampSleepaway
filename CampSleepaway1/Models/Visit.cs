@@ -25,10 +25,12 @@ namespace CampSleepaway1.Models
         public DateTime DepartureDates { get; set; }
 
         public int MaxVisitTime { get; set; }
-        public DateTimeOffset EarliestVisit { get; set; }
-        public DateTimeOffset LatestVisit { get; set; }
+        public DateTime EarliestVisit { get; set; }
+        public DateTime LatestVisit { get; set; }
 
-        [ForeignKey("NextOfKinId")]
-        public virtual List<NextOfKin> NextOfKins { get; set; }
+        public int NextOfKinId { get; set; }
+        public virtual NextOfKin NextOfKin { get; set; }
+        public int CamperId { get; set; }
+        public virtual Camper camper { get; set; }
     }    
 }

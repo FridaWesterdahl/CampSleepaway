@@ -32,7 +32,7 @@ namespace CampSleepaway1.Models
         [StringLength(20)]
         public string PhoneNumber { get; set; }
 
-        [ForeignKey("CamperId")]
-        public virtual List<Camper> Campers { get; set; }
+        public virtual List<CamperNextOfKin> CamperNextOfKins { get; set; }
+        public virtual List<Visit> Visits { get; set; }
     }
 }

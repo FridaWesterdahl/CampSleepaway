@@ -25,6 +25,7 @@ namespace CampSleepaway1.Models
         public DbSet<Visit> Visits { get; set; }
         public DbSet<CamperStay> CamperStays { get; set; }
         public DbSet<CounselorStay> CounselorStays { get; set; }
+        public DbSet<CamperNextOfKin> CamperNextOfKins { get; set; }
 
     }
 }

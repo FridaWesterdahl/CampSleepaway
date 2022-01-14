@@ -24,7 +24,10 @@ namespace CampSleepaway1.Models
         [Column("DepartureDate")]
         public DateTime DepartureDates { get; set; }
 
-        [ForeignKey("CounselorId")]
-        public virtual List<Counselor> Counselors { get; set; }
+ 
+        public virtual Counselor Counselor { get; set; }
+        public int CounselerId { get; set; }
+        public virtual Cabin Cabin { get; set; }
+        public int CabinId { get; set; }
     }
 }

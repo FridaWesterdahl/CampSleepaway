@@ -31,7 +31,7 @@ namespace CampSleepaway1.Models
         [Required]
         public int Age { get; set; }
 
-        [ForeignKey("VisitId")]
-        public virtual List<Visit> Visits { get; set; }
+        public virtual List<Visit> Visit { get; set; }
+
     }
 }
