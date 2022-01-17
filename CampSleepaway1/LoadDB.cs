@@ -15,13 +15,13 @@ namespace CampSleepaway1
             using (var db = new EFContext())
             {
                 Camper camper = new Camper();
-                camper.FirstName = "Alwa";
-                camper.LastName = "Larsson";
-                camper.Age = 3;
+                camper.FirstName = "Majs";
+                camper.LastName = "Majsson";
+                camper.Age = 5;
                 
                 db.Add(camper);
                 db.SaveChanges();
-                Console.WriteLine("Camper inserted!");
+                Console.WriteLine("Camper {0} {1} inserted!", camper.FirstName, camper.LastName);
             }
             return;
         }
@@ -36,7 +36,7 @@ namespace CampSleepaway1
 
                 db.Add(counselor);
                 db.SaveChanges();
-                Console.WriteLine("Counselor inserted!");
+                Console.WriteLine("Counselor {0} {1} inserted!", counselor.FirstName, counselor.LastName);
             }
             return;
         }
@@ -51,7 +51,7 @@ namespace CampSleepaway1
 
                 db.Add(cabin);
                 db.SaveChanges();
-                Console.WriteLine("Cabin inserted!");
+                Console.WriteLine("Cabin {0} {1} inserted!", cabin.Id, cabin.Name);
             }
             return;
         }
@@ -60,13 +60,13 @@ namespace CampSleepaway1
             using (var db = new EFContext())
             {
                 NextOfKin nok = new NextOfKin();
-                nok.FirstName = "Lena";
-                nok.LastName = "Larsson";
-                nok.PhoneNumber = "048589489";
+                nok.FirstName = "Brev";
+                nok.LastName = "Bäraren";
+                nok.PhoneNumber = "047654697";
 
                 db.Add(nok);
                 db.SaveChanges();
-                Console.WriteLine("Kin inserted!");
+                Console.WriteLine("{0} {1} inserted as kin!", nok.FirstName, nok.LastName);
             }
             return;
         }

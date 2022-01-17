@@ -26,8 +26,8 @@ namespace CampSleepaway1
             Console.Clear();
             Logo();
             Console.WriteLine("What do you want to do? Enter the number below: \n" +
-                "[1] Register a new camper\n" +
-                "[2] Read all registered campers that has visited\n" +
+                "[1] Handle campers\n" +
+                "[2] Handle counselors\n" +
                 "[3] Update the address for a employee\n" +
                 "[4] Show sales for a country of your choosing\n" +
                 "[5] Make a new order\n" +
@@ -36,12 +36,10 @@ namespace CampSleepaway1
             switch (number)
             {
                 case 1:
-                    HandleTables.InsertCamperToTable();
-                    Console.ReadLine();
+                    HandleCampers();
                     break;
                 case 2:
-                    HandleTables.ReadCampers();
-                    Console.ReadLine();
+                    HandleCounselors();
                     break;
                 /*case 3:
                     _handler.UpdateEmployee();
@@ -67,6 +65,74 @@ namespace CampSleepaway1
                     break;
             }
             return ShowMenu();
+        }
+        public void HandleCampers()
+        {
+            Console.WriteLine("What do you want to do? Enter the number below: \n" +
+                "[1] Read all registered campers that has visited\n" +
+                "[2] Insert a camper\n" +
+                "[3] Update a campers name and age\n" +
+                "[4] Delete a camper by Id\n" +
+                "[0] Back to main menu");
+            int number = int.Parse(Console.ReadLine());
+            switch (number)
+            {
+                case 0:
+                    ShowMenu();
+                    break;
+                case 1:
+                    HandleTables.ReadCampers();
+                    break;
+                case 2:
+                    HandleTables.InsertCamperToTable();
+                    break;
+                case 3:
+                    HandleTables.UpdateCamper();
+                    break;
+                case 4:
+                    HandleTables.DeleteCamper();
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("You have to choose a number between 0-4!");
+                    Console.ResetColor();
+                    Console.ReadLine();
+                    break;
+            }       
+        }
+        public void HandleCounselors()
+        {
+            Console.WriteLine("What do you want to do? Enter the number below: \n" +
+                "[1] Read all registered counselors\n" +
+                "[2] Insert a counselor\n" +
+                "[3] Update a counselors name and title\n" +
+                "[4] Delete a counselor by Id\n" +
+                "[0] Back to main menu");
+            int number = int.Parse(Console.ReadLine());
+            switch (number)
+            {
+                case 0:
+                    ShowMenu();
+                    break;
+                case 1:
+                    HandleTables.ReadCounselors();
+                    break;
+                case 2:
+                    HandleTables.InsertCounselorToTable();
+                    break;
+                case 3:
+                    HandleTables.UpdateCounselor();
+                    break;
+                case 4:
+                    HandleTables.DeleteCounselor();
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("You have to choose a number between 0-4!");
+                    Console.ResetColor();
+                    Console.ReadLine();
+                    break;
+            }
         }
     }
 }

@@ -31,6 +31,6 @@ namespace CampSleepaway1.Models
         public int NextOfKinId { get; set; }
         public virtual NextOfKin NextOfKin { get; set; }
         public int CamperId { get; set; }
-        public virtual Camper camper { get; set; }
+        public virtual Camper Camper { get; set; }
     }    
 }
