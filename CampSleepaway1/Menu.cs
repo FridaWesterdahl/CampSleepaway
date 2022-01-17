@@ -28,8 +28,8 @@ namespace CampSleepaway1
             Console.WriteLine("What do you want to do? Enter the number below: \n" +
                 "[1] Handle campers\n" +
                 "[2] Handle counselors\n" +
-                "[3] Update the address for a employee\n" +
-                "[4] Show sales for a country of your choosing\n" +
+                "[3] Handle cabins\n" +
+                "[4] Handle next of kins\n" +
                 "[5] Make a new order\n" +
                 "[6] Delete a customer and its orders");
             int number = int.Parse(Console.ReadLine());
@@ -41,15 +41,14 @@ namespace CampSleepaway1
                 case 2:
                     HandleCounselors();
                     break;
-                /*case 3:
-                    _handler.UpdateEmployee();
+                case 3:
+                    HandleCabins();
+                    break;
+               case 4:
+                    HandleNextOfKins();
                     Console.ReadLine();
                     break;
-                case 4:
-                    _handler.ShowCountrySales();
-                    Console.ReadLine();
-                    break;
-                case 5:
+               /* case 5:
                     _handler.AddNewOrder();
                     Console.ReadLine();
                     break;
@@ -73,6 +72,7 @@ namespace CampSleepaway1
                 "[2] Insert a camper\n" +
                 "[3] Update a campers name and age\n" +
                 "[4] Delete a camper by Id\n" +
+                "[5] Look up all campers and their next of kins\n" +
                 "[0] Back to main menu");
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -82,19 +82,27 @@ namespace CampSleepaway1
                     break;
                 case 1:
                     HandleTables.ReadCampers();
+                    Console.ReadLine();
                     break;
                 case 2:
                     HandleTables.InsertCamperToTable();
+                    Console.ReadLine();
                     break;
                 case 3:
                     HandleTables.UpdateCamper();
+                    Console.ReadLine();
                     break;
                 case 4:
                     HandleTables.DeleteCamper();
+                    Console.ReadLine();
+                    break;
+                case 5:
+                    HandleTables.ShowNextOfKinRelations();
+                    Console.ReadLine();
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 0-4!");
+                    Console.WriteLine("You have to choose a number between 0-5!");
                     Console.ResetColor();
                     Console.ReadLine();
                     break;
@@ -116,15 +124,75 @@ namespace CampSleepaway1
                     break;
                 case 1:
                     HandleTables.ReadCounselors();
+                    Console.ReadLine();
                     break;
                 case 2:
                     HandleTables.InsertCounselorToTable();
+                    Console.ReadLine();
                     break;
                 case 3:
                     HandleTables.UpdateCounselor();
+                    Console.ReadLine();
                     break;
                 case 4:
                     HandleTables.DeleteCounselor();
+                    Console.ReadLine();
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("You have to choose a number between 0-4!");
+                    Console.ResetColor();
+                    Console.ReadLine();
+                    break;
+            }
+        }
+        public void HandleCabins()
+        {
+            Console.WriteLine("What do you want to do? Enter the number below: \n" +
+                "[1] View of all cabins\n" +
+                "[2] Insert a new cabin\n" +
+                "[0] Back to main menu");
+            int number = int.Parse(Console.ReadLine());
+            switch (number)
+            {
+                case 0:
+                    ShowMenu();
+                    break;
+                case 1:
+                    HandleTables.ReadAllCabins();
+                    Console.ReadLine();
+                    break;
+                case 2:
+                    HandleTables.InsertCabinToTable();
+                    Console.ReadLine();
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("You have to choose a number between 0-2!");
+                    Console.ResetColor();
+                    Console.ReadLine();
+                    break;
+            }
+        }
+        public void HandleNextOfKins()
+        {
+            Console.WriteLine("What do you want to do? Enter the number below: \n" +
+                "[1] View all next of kins\n" +
+                "[2] Update next of kin\n" +
+                "[0] Back to main menu");
+            int number = int.Parse(Console.ReadLine());
+            switch (number)
+            {
+                case 0:
+                    ShowMenu();
+                    break;
+                case 1:
+                    HandleTables.ShowNextOfKins();
+                    Console.ReadLine();
+                    break;
+                case 2:
+                    HandleTables.UpdateNextOfKin();
+                    Console.ReadLine();
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;

@@ -70,6 +70,18 @@ namespace CampSleepaway1
             }
             return;
         }
-
+        public void FixNextOfKinRelations()
+        {
+            using (var db = new EFContext())
+            {
+                var cnok = new CamperNextOfKin()
+                {
+                    CamperId = 1005,
+                    NextOfKinId = 5
+                };
+                db.Add(cnok);
+                db.SaveChanges();
+            }
+        }
     }
 }

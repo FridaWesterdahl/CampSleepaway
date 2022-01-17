@@ -168,6 +168,122 @@ namespace CampSleepaway1
             }
         }
 
+        public static void ReadAllCabins()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("All cabins:\n");
+                List<Cabin> cabins = db.Cabins.ToList();
+                foreach (Cabin c in cabins)
+                {
+                    Console.WriteLine($"Id {c.Id}: {c.Name}");
+                }
+            }
+            return;
+        }
+        public static void InsertCabinToTable()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("What should the cabin be called?" +
+                           "\n-----------------------------");
+                string name = Console.ReadLine();
+
+                string query =
+                    $"INSERT INTO Cabins (CabinName, CapacityCampers, CapacityCounselor) " +
+                    $"VALUES('{name}', 4, 1);";
+                SqlCommand command = new SqlCommand(query);
+
+                db.SaveChanges();
+                Console.WriteLine("Coabin {0} is added!", name);
+            }
+        }
+
+        public static void ShowNextOfKinRelations()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("Campers and next of kins:");
+
+                var q =
+                    (from cnok in db.CamperNextOfKins
+                     join c in db.Campers on cnok.CamperId equals c.Id
+                     join nok in db.NextOfKins on cnok.NextOfKinId equals nok.Id
+                     select new { c, cnok, nok })
+                     .Select(x => new { Name = x.c.FirstName + " " + x.c.LastName,
+                         NextOfKin = x.nok.FirstName + " " + x.nok.LastName, Phone = x.nok.PhoneNumber });
+
+                foreach (var item in q)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+        }
+        public static void ShowNextOfKins()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("All registered next of kins:");
+
+                var q =
+                    (from nok in db.NextOfKins
+                     select new { nok })
+                     .Select(x => new { Name = x.nok.FirstName + " " + x.nok.LastName, Phone = x.nok.PhoneNumber });
+
+                foreach (var item in q)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+        }
+        public static void UpdateNextOfKin()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("Write the NextOfKin Id of the kin you want to change:");
+                int Id = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Firstname:" +
+                           "\n-----------------------------");
+                string firstName = Console.ReadLine();
+                Console.WriteLine("Lastname:" +
+                    "\n-----------------------------");
+                string lastName = Console.ReadLine();
+                Console.WriteLine("Phonenumber:" +
+                    "\n-----------------------------");
+                string phone = Console.ReadLine();
+
+                string query =
+                    $"UPDATE NextOfKins SET FirstName = {firstName}, LastName = {lastName}, PhoneNumber = {phone}) " +
+                    $"WHERE NextOfKinId = {Id};";
+                SqlCommand command = new SqlCommand(query);
+
+                db.SaveChanges();
+                Console.WriteLine("Kin {0} {1} is updated!", firstName, lastName);
+            }
+        }
+        public static void InsertNextOfKin()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("Firstname:" +
+                           "\n-----------------------------");
+                string firstName = Console.ReadLine();
+                Console.WriteLine("Lastname:" +
+                    "\n-----------------------------");
+                string lastName = Console.ReadLine();
+                Console.WriteLine("Phonenumber:" +
+                    "\n-----------------------------");
+                string phone = Console.ReadLine();
+
+                string query =
+                    $"INSERT INTO NextOfKins (FirstName, LastName, PhoneNumber) " +
+                    $"VALUES ('{firstName}', '{lastName}', '{phone}';";
+                SqlCommand command = new SqlCommand(query);
+
+                db.SaveChanges();
+                Console.WriteLine("Kin {0} {1} is updated!", firstName, lastName);
+            }
+        }
     }
 
 }

@@ -17,9 +17,10 @@ namespace CampSleepaway1
             //loadDB.InsertCabin();
             //loadDB.InsertNextOfKin();
             //loadDB.ReadCampers();
+            //loadDB.FixNextOfKinRelations();
 
-            //Menu menu = new Menu();
-            //menu.ShowMenu();
+            Menu menu = new Menu();
+            menu.ShowMenu();
 
 
 
