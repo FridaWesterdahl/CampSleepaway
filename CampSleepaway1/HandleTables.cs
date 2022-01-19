@@ -286,7 +286,20 @@ namespace CampSleepaway1
                 SqlCommand command = new SqlCommand(query);
 
                 db.SaveChanges();
-                Console.WriteLine("Kin {0} {1} is updated!", firstName, lastName);
+                Console.WriteLine("Kin {0} {1} is inserted!", firstName, lastName);
+            }
+        }
+        public void FixNextOfKinRelations()
+        {
+            using (var db = new EFContext())
+            {
+                var cnok = new CamperNextOfKin()
+                {
+                    CamperId = 1005,
+                    NextOfKinId = 5
+                };
+                db.Add(cnok);
+                db.SaveChanges();
             }
         }
     }

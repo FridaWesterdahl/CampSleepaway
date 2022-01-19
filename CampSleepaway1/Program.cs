@@ -11,13 +11,9 @@ namespace CampSleepaway1
     {
         static void Main(string[] args)
         {
-            LoadDB loadDB = new LoadDB();
-            //loadDB.InsertCamper();
-            //loadDB.InsertCounselor();
-            //loadDB.InsertCabin();
-            //loadDB.InsertNextOfKin();
-            //loadDB.ReadCampers();
-            //loadDB.FixNextOfKinRelations();
+            //Uncomment for loading the database
+            //LoadDB loadDB = new LoadDB();
+            //loadDB.LoadAll();
 
             Menu menu = new Menu();
             menu.ShowMenu();
