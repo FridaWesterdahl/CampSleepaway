@@ -52,6 +52,7 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
+                ReadCampers();
                 Console.WriteLine("Write the Camper Id of the camper you want to change:");
                 int camperId = Convert.ToInt32(Console.ReadLine());
                 Console.WriteLine("Firstname:" +
@@ -77,6 +78,7 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
+                ReadCampers();
                 Console.WriteLine("Write the Camper Id of the camper you want to delete:");
                 int Id = Convert.ToInt32(Console.ReadLine());
 
@@ -130,6 +132,7 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
+                ReadCounselors();
                 Console.WriteLine("Write the Counselor Id of the counselor you want to change:");
                 int counselorId = Convert.ToInt32(Console.ReadLine());
                 Console.WriteLine("Firstname:" +
@@ -155,6 +158,7 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
+                ReadCounselors();
                 Console.WriteLine("Write the Counselor Id of the counselor you want to delete:");
                 int Id = Convert.ToInt32(Console.ReadLine());
 
@@ -195,7 +199,7 @@ namespace CampSleepaway1
                 SqlCommand command = new SqlCommand(query);
 
                 db.SaveChanges();
-                Console.WriteLine("Coabin {0} is added!", name);
+                Console.WriteLine("Cabin {0} is added!", name);
             }
         }
 
@@ -240,6 +244,7 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
+                ShowNextOfKins();
                 Console.WriteLine("Write the NextOfKin Id of the kin you want to change:");
                 int Id = Convert.ToInt32(Console.ReadLine());
                 Console.WriteLine("Firstname:" +
