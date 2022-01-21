@@ -282,26 +282,30 @@ namespace CampSleepaway1
 
                 string query =
                     $"INSERT INTO NextOfKins (FirstName, LastName, PhoneNumber) " +
-                    $"VALUES ('{firstName}', '{lastName}', '{phone}';";
+                    $"VALUES ('{firstName}', '{lastName}', '{phone}');";
                 SqlCommand command = new SqlCommand(query);
 
-                db.SaveChanges();
                 Console.WriteLine("Kin {0} {1} is inserted!", firstName, lastName);
-            }
-        }
-        public void FixNextOfKinRelations()
-        {
-            using (var db = new EFContext())
-            {
-                var cnok = new CamperNextOfKin()
-                {
-                    CamperId = 1005,
-                    NextOfKinId = 5
-                };
-                db.Add(cnok);
+                ShowNextOfKins();
+                Console.WriteLine("We need to know your relation with a camper.\n" +
+                    "Enter the next of kin Id:");
+                int kinId = Int32.Parse(Console.ReadLine());
+                ReadCampers();
+                Console.WriteLine("Then enter the Id of the camper:");
+                int camId = Int32.Parse(Console.ReadLine());
+
+                    var cnok = new CamperNextOfKin()
+                    {
+                        CamperId = camId,
+                        NextOfKinId = kinId
+                    };
+                    db.Add(cnok);
+                Console.WriteLine($"Relation between kin Id: {kinId}, camper Id: {camId} is registered.");
+
                 db.SaveChanges();
             }
         }
+       
     }
 
 }
