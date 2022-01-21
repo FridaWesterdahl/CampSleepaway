@@ -12,10 +12,13 @@ namespace CampSleepaway1
 {
     public class HandleTables
     {
+        
+            const string connectionString =
+            "Data Source=LAPTOP-MOP66LEC\\SQLEXPRESS;Initial Catalog=CS_Frida_Westerdahl;Integrated Security=True";
+        private static SqlConnection dbcon;
+        
         public static void InsertCamperToTable()
         {
-            using (var db = new EFContext())
-            {
                 Console.WriteLine("Firstname:" +
                            "\n-----------------------------");
                 string firstName = Console.ReadLine();
@@ -29,11 +32,15 @@ namespace CampSleepaway1
                 string query =
                     $"INSERT INTO Campers (FirstName, LastName, Age) " +
                     $"VALUES('{firstName}','{lastName}','{age}');";
-                SqlCommand command = new SqlCommand(query);
-
-                db.SaveChanges();
-                Console.WriteLine("Camper {0} {1} is added!", firstName, lastName);
-            }
+                
+            dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+            dbcon.Open();
+            
+            int returnValue = command.ExecuteNonQuery();
+            Console.WriteLine("Camper {0} {1} is added!", firstName, lastName);
+            dbcon.Close();
+            
         }
         public static void ReadCampers()
         {
@@ -50,8 +57,6 @@ namespace CampSleepaway1
         }
         public static void UpdateCamper()
         {
-            using (var db = new EFContext())
-            {
                 ReadCampers();
                 Console.WriteLine("Write the Camper Id of the camper you want to change:");
                 int camperId = Convert.ToInt32(Console.ReadLine());
@@ -66,13 +71,16 @@ namespace CampSleepaway1
                 int age = Convert.ToInt32(Console.ReadLine());
 
                 string query =
-                    $"UPDATE Campers SET FirstName = {firstName}, LastName = {lastName}, Age = {age}) " +
+                    $"UPDATE Campers SET FirstName = '{firstName}', LastName = '{lastName}', Age = {age} " +
                     $"WHERE CamperId = {camperId};";
-                SqlCommand command = new SqlCommand(query);
 
-                db.SaveChanges();
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
+
+                int returnValue = command.ExecuteNonQuery();
                 Console.WriteLine("Camper {0} {1} is updated!", firstName, lastName);
-            }
+                dbcon.Close();
         }
         public static void DeleteCamper()
         {
@@ -85,17 +93,20 @@ namespace CampSleepaway1
                 string query =
                     $"DELETE Campers " +
                     $"WHERE CamperId = {Id};";
-                SqlCommand command = new SqlCommand(query);
+                
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
 
-                db.SaveChanges();
+                int returnValue = command.ExecuteNonQuery();
+
                 Console.WriteLine("Camper {0} is deleted!", Id);
+                dbcon.Close();
             }
         }
 
         public static void InsertCounselorToTable()
         {
-            using (var db = new EFContext())
-            {
                 Console.WriteLine("Firstname:" +
                            "\n-----------------------------");
                 string firstName = Console.ReadLine();
@@ -109,11 +120,15 @@ namespace CampSleepaway1
                 string query =
                     $"INSERT INTO Counselors (FirstName, LastName, Title) " +
                     $"VALUES('{firstName}','{lastName}','{title}');";
-                SqlCommand command = new SqlCommand(query);
+                
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
 
-                db.SaveChanges();
+                int returnValue = command.ExecuteNonQuery();
+
                 Console.WriteLine("Counselor {0} {1} is added!", firstName, lastName);
-            }
+                dbcon.Close();   
         }
         public static void ReadCounselors()
         {
@@ -130,8 +145,6 @@ namespace CampSleepaway1
         }
         public static void UpdateCounselor()
         {
-            using (var db = new EFContext())
-            {
                 ReadCounselors();
                 Console.WriteLine("Write the Counselor Id of the counselor you want to change:");
                 int counselorId = Convert.ToInt32(Console.ReadLine());
@@ -141,23 +154,26 @@ namespace CampSleepaway1
                 Console.WriteLine("Lastname:" +
                     "\n-----------------------------");
                 string lastName = Console.ReadLine();
-                Console.WriteLine("Age (enter a number):" +
+                Console.WriteLine("Title:" +
                     "\n-----------------------------");
                 string title = Console.ReadLine();
 
                 string query =
-                    $"UPDATE Counselors SET FirstName = {firstName}, LastName = {lastName}, Title = {title}) " +
+                    $"UPDATE Counselors SET FirstName = '{firstName}', LastName = '{lastName}', Title = {title} " +
                     $"WHERE CounselorId = {counselorId};";
-                SqlCommand command = new SqlCommand(query);
+               
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
 
-                db.SaveChanges();
+                int returnValue = command.ExecuteNonQuery();
+
                 Console.WriteLine("Camper {0} {1} is updated!", firstName, lastName);
-            }
+                dbcon.Close();
+            
         }
         public static void DeleteCounselor()
         {
-            using (var db = new EFContext())
-            {
                 ReadCounselors();
                 Console.WriteLine("Write the Counselor Id of the counselor you want to delete:");
                 int Id = Convert.ToInt32(Console.ReadLine());
@@ -165,11 +181,15 @@ namespace CampSleepaway1
                 string query =
                     $"DELETE Counselors " +
                     $"WHERE CounselorId = {Id};";
-                SqlCommand command = new SqlCommand(query);
 
-                db.SaveChanges();
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
+
+                int returnValue = command.ExecuteNonQuery();
+
                 Console.WriteLine("Counselor {0} is deleted!", Id);
-            }
+                dbcon.Close();  
         }
 
         public static void ReadAllCabins()
@@ -187,8 +207,6 @@ namespace CampSleepaway1
         }
         public static void InsertCabinToTable()
         {
-            using (var db = new EFContext())
-            {
                 Console.WriteLine("What should the cabin be called?" +
                            "\n-----------------------------");
                 string name = Console.ReadLine();
@@ -196,11 +214,16 @@ namespace CampSleepaway1
                 string query =
                     $"INSERT INTO Cabins (CabinName, CapacityCampers, CapacityCounselor) " +
                     $"VALUES('{name}', 4, 1);";
-                SqlCommand command = new SqlCommand(query);
 
-                db.SaveChanges();
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
+
+                int returnValue = command.ExecuteNonQuery();
+
                 Console.WriteLine("Cabin {0} is added!", name);
-            }
+                dbcon.Close();
+            
         }
         public static void ShowCabinsWithStays()
         {
@@ -226,6 +249,102 @@ namespace CampSleepaway1
                     Console.WriteLine(item);
                 }
             }
+        }
+        public static void SearchCabin()
+        {
+                Console.WriteLine("Do you want to search by cabin or counselor?\n" +
+                    "[1] Cabin\n" +
+                    "[2] Counselor");
+                int choice = int.Parse(Console.ReadLine());
+
+            switch (choice)
+            {
+                case 1:
+                    Console.Clear();
+                    ByCabinId();
+                    break;
+                case 2:
+                    Console.Clear();
+                    ByCounselorId();
+                    break;
+    
+            }
+
+            static void ByCabinId()
+            {
+                ReadAllCabins();
+                Console.WriteLine("\nEnter the cabins Id:");
+                int Id = int.Parse(Console.ReadLine());
+
+                string query =
+              $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
+              $"FROM Campers cam " +
+              $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
+              $"JOIN Cabins c on cams.CabinId = c.CabinId " +
+              $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
+              $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
+              $"WHERE c.CabinId = {Id} " +
+              $"ORDER BY c.CabinName";
+
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+
+                using (reader)
+                {
+                    while (reader.Read())
+                    {
+                        string Cabin = (string)reader["Cabin"];
+                        string Camper = (string)reader["Camper"];
+                        string Counselor = (string)reader["Counselor"];
+                        Console.WriteLine("Cabin: {0}, Camper: {1}, Counselor: {2}", Cabin, Camper, Counselor);
+                    }
+                }
+                int returnValue = command.ExecuteNonQuery();
+
+                dbcon.Close();
+                Console.ReadLine();
+            }
+            static void ByCounselorId()
+            {
+                ReadCounselors();
+                Console.WriteLine("\nEnter the counselors Id:");
+                int Id = int.Parse(Console.ReadLine());
+
+                string query =
+              $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
+              $"FROM Campers cam " +
+              $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
+              $"JOIN Cabins c on cams.CabinId = c.CabinId " +
+              $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
+              $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
+              $"WHERE con.CounselorId = {Id} " +
+              $"ORDER BY c.CabinName";
+
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+
+                using (reader)
+                {
+                    while (reader.Read())
+                    {
+                        string Cabin = (string)reader["Cabin"];
+                        string Camper = (string)reader["Camper"];
+                        string Counselor = (string)reader["Counselor"];
+                        Console.WriteLine("Cabin: {0}, Camper: {1}, Counselor: {2}", Cabin, Camper, Counselor);
+                    }
+                }
+                int returnValue = command.ExecuteNonQuery();
+
+                dbcon.Close();
+                Console.ReadLine();
+            }
+
         }
 
         public static void ShowNextOfKinRelations()

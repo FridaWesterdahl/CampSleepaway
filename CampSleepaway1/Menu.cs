@@ -67,6 +67,7 @@ namespace CampSleepaway1
                 "[3] Update a campers name and age\n" +
                 "[4] Delete a camper by Id\n" +
                 "[5] Look up all campers and their next of kins\n" +
+                "[6] Search campers by cabin/counselor Id\n" +
                 "[0] Back to main menu");
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -92,6 +93,10 @@ namespace CampSleepaway1
                     break;
                 case 5:
                     HandleTables.ShowNextOfKinRelations();
+                    Console.ReadLine();
+                    break;
+                case 6:
+                    HandleTables.SearchCabin();
                     Console.ReadLine();
                     break;
                 default:
@@ -146,6 +151,7 @@ namespace CampSleepaway1
                 "[1] View of all cabins\n" +
                 "[2] Insert a new cabin\n" +
                 "[3] Show all cabins and their stayings\n" +
+                "[4] Search cabins and their stays by Id\n" +
                 "[0] Back to main menu");
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -165,9 +171,13 @@ namespace CampSleepaway1
                     HandleTables.ShowCabinsWithStays();
                     Console.ReadLine();
                     break;
+                case 4:
+                    HandleTables.SearchCabin();
+                    Console.ReadLine();
+                    break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 0-3!");
+                    Console.WriteLine("You have to choose a number between 0-4!");
                     Console.ResetColor();
                     Console.ReadLine();
                     break;
@@ -178,6 +188,7 @@ namespace CampSleepaway1
             Console.WriteLine("What do you want to do? Enter the number below: \n" +
                 "[1] View all next of kins\n" +
                 "[2] Update next of kin\n" +
+                "[3] Show next of kin relations\n" +
                 "[0] Back to main menu");
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -193,9 +204,13 @@ namespace CampSleepaway1
                     HandleTables.UpdateNextOfKin();
                     Console.ReadLine();
                     break;
+                case 3:
+                    HandleTables.ShowNextOfKinRelations();
+                    Console.ReadLine();
+                    break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 0-4!");
+                    Console.WriteLine("You have to choose a number between 0-3!");
                     Console.ResetColor();
                     Console.ReadLine();
                     break;

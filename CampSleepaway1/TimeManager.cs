@@ -107,11 +107,14 @@ namespace CampSleepaway1
                 Console.WriteLine("Enter the next of kin Id:");
                 int kinId = int.Parse(Console.ReadLine());
 
+                //var earliestVisit = DateTime.SpecifyKind()
+
                 var visit = new Visit()
                 {
                     CamperId = camId,
                     NextOfKinId = kinId,
-                    ArrivalDates = DateTime.Now
+                    MaxVisitTime = 3,
+                    EarliestVisit = DateTime.MinValue
 
                 };
                 db.Add(visit);
