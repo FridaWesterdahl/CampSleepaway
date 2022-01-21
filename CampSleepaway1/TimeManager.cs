@@ -24,19 +24,33 @@ namespace CampSleepaway1
                 var arr = DateTime.Now;
                 var dep = DateTime.Now.AddMonths(1);
 
-                var cs = new CamperStay()
+                Cabin cabin = new Cabin();
+                foreach (var item in db.CamperStays)
                 {
-                    CamperId = camId,
-                    CabinId = cabId,
-                    ArrivalDates = arr,
-                    DepartureDates = dep
+                    cabin.CapacityCampers++;
+                }
+                if (cabin.CapacityCampers < 5)
+                {
+                    var cs = new CamperStay()
+                    {
+                        CamperId = camId,
+                        CabinId = cabId,
+                        ArrivalDates = arr,
+                        DepartureDates = dep
 
-                };
-                db.Add(cs);
+                    };
+                    db.Add(cs);
+                    Console.WriteLine("Camper {0} is registered {1}. Departure {2}", camId, arr, dep);
+                }
+                else
+                {
+                    Console.WriteLine("The cabin is full! Choose another one.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    CamperArrival();
+                }
 
                 db.SaveChanges();
-                Console.WriteLine("Camper {0} is registered {1}. Departure {2}", camId, arr, dep);
-
             }
         }
 
@@ -53,18 +67,34 @@ namespace CampSleepaway1
                 var arr = DateTime.Now;
                 var dep = DateTime.Now.AddMonths(1);
 
-                var cs = new CounselorStay()
+                Cabin cabin = new Cabin();
+                foreach (var item in db.CamperStays)
                 {
-                    CounselorId = conId,
-                    CabinId = cabId,
-                    ArrivalDates = arr,
-                    DepartureDates = dep
+                    cabin.CapacityCounselor++;
+                }
+                if (cabin.CapacityCounselor < 2)
+                {
+                    var cs = new CounselorStay()
+                    {
+                        CounselorId = conId,
+                        CabinId = cabId,
+                        ArrivalDates = arr,
+                        DepartureDates = dep
 
-                };
-                db.Add(cs);
+                    };
+                    db.Add(cs);
+                    Console.WriteLine("Counselor {0} is registered {1}. Departure {2}", conId, arr, dep);
+                }
+                else
+                {
+                    Console.WriteLine("The cabin already have a counselor staying!");
+                    Console.ReadLine();
+                    Console.Clear();
+                    CounselorArrival();
+                }
+
 
                 db.SaveChanges();
-                Console.WriteLine("Counselor {0} is registered {1}. Departure {2}", conId, arr, dep);
             }
         }
         public static void VisitorArrival()

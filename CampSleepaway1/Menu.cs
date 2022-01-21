@@ -145,6 +145,7 @@ namespace CampSleepaway1
             Console.WriteLine("What do you want to do? Enter the number below: \n" +
                 "[1] View of all cabins\n" +
                 "[2] Insert a new cabin\n" +
+                "[3] Show all cabins and their stayings\n" +
                 "[0] Back to main menu");
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -160,9 +161,13 @@ namespace CampSleepaway1
                     HandleTables.InsertCabinToTable();
                     Console.ReadLine();
                     break;
+                case 3:
+                    HandleTables.ShowCabinsWithStays();
+                    Console.ReadLine();
+                    break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 0-2!");
+                    Console.WriteLine("You have to choose a number between 0-3!");
                     Console.ResetColor();
                     Console.ReadLine();
                     break;

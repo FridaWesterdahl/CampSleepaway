@@ -202,6 +202,31 @@ namespace CampSleepaway1
                 Console.WriteLine("Cabin {0} is added!", name);
             }
         }
+        public static void ShowCabinsWithStays()
+        {
+            using (var db = new EFContext())
+            {
+                Console.WriteLine("Cabins and their stays:");
+
+                var query =
+                    (from cams in db.CamperStays
+                     join c in db.Cabins on cams.CabinId equals c.Id
+                     join cons in db.CounselorStays on c.Id equals cons.CounselorId
+                     select new { c, cams, cons })
+                     .Select(x => new
+                     {
+                         Cabin = x.c.Name,
+                         Counselor = x.cons.Counselor.FirstName,
+                         Camper = x.cams.Camper.FirstName + " " + x.cams.Camper.LastName
+                     })
+                     .OrderBy(x => x.Cabin);
+
+                foreach (var item in query)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+        }
 
         public static void ShowNextOfKinRelations()
         {
