@@ -26,7 +26,7 @@ namespace CampSleepaway1.Models
 
  
         public virtual Counselor Counselor { get; set; }
-        public int CounselerId { get; set; }
+        public int CounselorId { get; set; }
         public virtual Cabin Cabin { get; set; }
         public int CabinId { get; set; }
     }

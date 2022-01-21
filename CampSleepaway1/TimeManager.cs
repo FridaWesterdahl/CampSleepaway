@@ -15,74 +15,56 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
-                Console.WriteLine("Enter the camper Id:");
+                HandleTables.ReadCampers();
+                Console.WriteLine("\nEnter the camper Id:");
                 int camId = int.Parse(Console.ReadLine());
-                Console.WriteLine("Enter the cabin Id:");
+                HandleTables.ReadAllCabins();
+                Console.WriteLine("\nEnter the cabin Id:");
                 int cabId = int.Parse(Console.ReadLine());
-                var time = DateTime.Now;
+                var arr = DateTime.Now;
+                var dep = DateTime.Now.AddMonths(1);
 
-                string query =
-                $"INSERT INTO CamperStays (CamperId, CabinId, ArrivalDate) " +
-                $"VALUES ({camId}, {cabId}, {time};)";
-                SqlCommand command = new SqlCommand(query);
-
-                db.SaveChanges();
-                Console.WriteLine("Camper {0} is registered! {1} ", camId, time);
-
-            }
-        }
-        public static void CamperDeparture()
-        {
-            using (var db = new EFContext())
-            {
-                Console.WriteLine("Enter the camper Id:");
-                int camId = int.Parse(Console.ReadLine());
-
-                var arr = new CamperStay()
+                var cs = new CamperStay()
                 {
                     CamperId = camId,
-                    DepartureDates = DateTime.Now
+                    CabinId = cabId,
+                    ArrivalDates = arr,
+                    DepartureDates = dep
 
                 };
-                db.Add(arr);
+                db.Add(cs);
+
                 db.SaveChanges();
+                Console.WriteLine("Camper {0} is registered {1}. Departure {2}", camId, arr, dep);
+
             }
         }
+
         public static void CounselorArrival()
         {
             using (var db = new EFContext())
             {
-                Console.WriteLine("Enter the counselor Id:");
+                HandleTables.ReadCounselors();
+                Console.WriteLine("\nEnter the counselor Id:");
                 int conId = int.Parse(Console.ReadLine());
-                Console.WriteLine("Enter the cabin Id:");
+                HandleTables.ReadAllCabins();
+                Console.WriteLine("\nEnter the cabin Id:");
                 int cabId = int.Parse(Console.ReadLine());
+                var arr = DateTime.Now;
+                var dep = DateTime.Now.AddMonths(1);
 
-                var arr = new CounselorStay()
+                var cs = new CounselorStay()
                 {
-                    CounselerId = conId,
-                    ArrivalDates = DateTime.Now,
-                    CabinId = cabId
+                    CounselorId = conId,
+                    CabinId = cabId,
+                    ArrivalDates = arr,
+                    DepartureDates = dep
 
                 };
-                db.Add(arr);
-                db.SaveChanges();
-            }
-        }
-        public static void CounselorDeparture()
-        {
-            using (var db = new EFContext())
-            {
-                Console.WriteLine("Enter the counselor Id:");
-                int conId = int.Parse(Console.ReadLine());
+                db.Add(cs);
 
-                var arr = new CounselorStay()
-                {
-                    CounselerId = conId,
-                    DepartureDates = DateTime.Now
-
-                };
-                db.Add(arr);
                 db.SaveChanges();
+                Console.WriteLine("Counselor {0} is registered {1}. Departure {2}", conId, arr, dep);
             }
         }
         public static void VisitorArrival()

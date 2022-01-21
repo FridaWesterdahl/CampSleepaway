@@ -30,8 +30,8 @@ namespace CampSleepaway1
                 "[2] Handle counselors\n" +
                 "[3] Handle cabins\n" +
                 "[4] Handle next of kins\n" +
-                "[5] Register an arrival\n" +
-                "[6] Register a departure");
+                "[5] Register an arrival\n");
+
             int number = int.Parse(Console.ReadLine());
             switch (number)
             {
@@ -50,12 +50,9 @@ namespace CampSleepaway1
                case 5:
                     HandleArrivals();
                     break;
-                case 6:
-                    HandleDepartures();
-                    break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 1-6!");
+                    Console.WriteLine("You have to choose a number between 1-5!");
                     Console.ResetColor();
                     Console.ReadLine();
                     break;
@@ -204,6 +201,7 @@ namespace CampSleepaway1
             Console.WriteLine("What do you want to do? Enter the number below: \n" +
                 "[1] Register a camper\n" +
                 "[2] Register a counselor\n" +
+                "[3] Register a visitor\n" +
                 "[0] Back to main menu");
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -219,37 +217,13 @@ namespace CampSleepaway1
                     TimeManager.CounselorArrival();
                     Console.ReadLine();
                     break;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 0-2!");
-                    Console.ResetColor();
-                    Console.ReadLine();
-                    break;
-            }
-        }
-        public void HandleDepartures()
-        {
-            Console.WriteLine("What do you want to do? Enter the number below: \n" +
-                "[1] Register a camper\n" +
-                "[2] Register a counselor\n" +
-                "[0] Back to main menu");
-            int number = int.Parse(Console.ReadLine());
-            switch (number)
-            {
-                case 0:
-                    ShowMenu();
-                    break;
-                case 1:
-                    TimeManager.CamperDeparture();
-                    Console.ReadLine();
-                    break;
-                case 2:
-                    TimeManager.CounselorDeparture();
+                case 3:
+                    TimeManager.VisitorArrival();
                     Console.ReadLine();
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 0-2!");
+                    Console.WriteLine("You have to choose a number between 0-3!");
                     Console.ResetColor();
                     Console.ReadLine();
                     break;
