@@ -68,6 +68,7 @@ namespace CampSleepaway1
                 "[4] Delete a camper by Id\n" +
                 "[5] Look up all campers and their next of kins\n" +
                 "[6] Search campers by cabin/counselor Id\n" +
+                "[7] Search camper by current cabin and  show their next of kin\n" +
                 "[0] Back to main menu");
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -99,9 +100,13 @@ namespace CampSleepaway1
                     HandleTables.SearchCabin();
                     Console.ReadLine();
                     break;
+                case 7:
+                    HandleTables.SearchCamperAndKins();
+                    Console.ReadLine();
+                    break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("You have to choose a number between 0-5!");
+                    Console.WriteLine("You have to choose a number between 0-7!");
                     Console.ResetColor();
                     Console.ReadLine();
                     break;

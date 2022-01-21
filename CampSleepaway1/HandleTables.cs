@@ -104,6 +104,43 @@ namespace CampSleepaway1
                 dbcon.Close();
             }
         }
+        public static void SearchCamperAndKins()
+        {
+            ReadAllCabins();
+            Console.WriteLine("\nEnter the cabin Id:");
+            int Id = int.Parse(Console.ReadLine());
+
+            string query =
+          $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, nok.FirstName + ' ' + nok.LastName AS NextOfKin " +
+          $"FROM CamperNextOfKins cnok " +
+          $"JOIN Campers cam on cnok.CamperId = cam.CamperId " +
+          $"JOIN NextOfKins nok on cnok.NextOfKinId = nok.NextOfKinId " +
+          $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
+          $"JOIN Cabins c on cams.CabinId = c.CabinId " +
+          $"WHERE c.CabinId = {Id} " +
+          $"ORDER BY c.CabinName";
+
+            dbcon = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand(query, dbcon);
+            dbcon.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+
+            using (reader)
+            {
+                while (reader.Read())
+                {
+                    string Cabin = (string)reader["Cabin"];
+                    string Camper = (string)reader["Camper"];
+                    string NextOfKin = (string)reader["NextOfKin"];
+                    Console.WriteLine("Cabin: {0}, Camper: {1}, NextOfKin: {2}", Cabin, Camper, NextOfKin);
+                }
+            }
+            int returnValue = command.ExecuteNonQuery();
+
+            dbcon.Close();
+            Console.ReadLine();
+        }
 
         public static void InsertCounselorToTable()
         {
@@ -357,7 +394,7 @@ namespace CampSleepaway1
                     (from cnok in db.CamperNextOfKins
                      join c in db.Campers on cnok.CamperId equals c.Id
                      join nok in db.NextOfKins on cnok.NextOfKinId equals nok.Id
-                     select new { c, cnok, nok })
+                     select new { c, nok })
                      .Select(x => new { Name = x.c.FirstName + " " + x.c.LastName,
                          NextOfKin = x.nok.FirstName + " " + x.nok.LastName, Phone = x.nok.PhoneNumber });
 
