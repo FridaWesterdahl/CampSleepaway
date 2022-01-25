@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using CampSleepaway1.Models;
@@ -11,53 +13,89 @@ namespace CampSleepaway1
 {
     public class TimeManager
     {
+        const string connectionString =
+            "Data Source=LAPTOP-MOP66LEC\\SQLEXPRESS;Initial Catalog=CS_Frida_Westerdahl;Integrated Security=True";
+        private static SqlConnection dbcon;
+
         public static void CamperArrival()
         {
-            using (var db = new EFContext())
+            HandleTables.ReadCampers();
+            Console.WriteLine("\nEnter the camper Id:");
+            int camId = int.Parse(Console.ReadLine());
+            HandleTables.ReadAllCabins();
+            Console.WriteLine("\nEnter the cabin Id:");
+            int cabId = int.Parse(Console.ReadLine());
+            var arr = DateTime.Now;
+            var dep = DateTime.Now.AddMonths(1);
+
+            using (dbcon = new SqlConnection(connectionString))
             {
-                HandleTables.ReadCampers();
-                Console.WriteLine("\nEnter the camper Id:");
-                int camId = int.Parse(Console.ReadLine());
-                HandleTables.ReadAllCabins();
-                Console.WriteLine("\nEnter the cabin Id:");
-                int cabId = int.Parse(Console.ReadLine());
-                var arr = DateTime.Now;
-                var dep = DateTime.Now.AddMonths(1);
+                string query =
+              $"SELECT COUNT(*) FROM CamperStays WHERE cabinId = {cabId};";
 
-                Cabin cabin = new Cabin();
-                foreach (var item in db.CamperStays)
+                int countCabinCampers = 0;
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    cabin.CapacityCampers++;
-                }
-                if (cabin.CapacityCampers < 5)
-                {
-                    var cs = new CamperStay()
+                    while (reader.Read())
                     {
-                        CamperId = camId,
-                        CabinId = cabId,
-                        ArrivalDates = arr,
-                        DepartureDates = dep
+                        countCabinCampers = (int)reader[0];
+                    }  
+                }
+                dbcon.Close();
 
-                    };
-                    db.Add(cs);
-                    Console.WriteLine("Camper {0} is registered {1}. Departure {2}", camId, arr, dep);
+                string query2 =
+                    $"SELECT COUNT(*) FROM CounselorStays WHERE cabinId = {cabId};";
+
+                int countCabinCounselor = 0;
+                SqlCommand command2 = new SqlCommand(query2, dbcon);
+                dbcon.Open();
+                using (SqlDataReader reader2 = command2.ExecuteReader())
+                {
+                    while (reader2.Read())
+                    {
+                        countCabinCounselor = (int)reader2[0];
+                    }
+                }
+                Console.Clear();
+                Console.WriteLine($"Counselors staying: {countCabinCounselor}\nCampers staying: {countCabinCampers}");
+                dbcon.Close();
+
+                if (countCabinCounselor == 0)
+                {
+                    Console.WriteLine("You cannot check in without a counselor staying!");
+                }
+                else if (countCabinCampers < 4)
+                {
+                    using (var db = new EFContext())
+                    {
+                        var cs = new CamperStay()
+                        {
+                            CamperId = camId,
+                            CabinId = cabId,
+                            ArrivalDates = arr,
+                            DepartureDates = dep
+
+                        };
+                        db.Add(cs);
+                        db.SaveChanges();
+                        Console.WriteLine("Camper {0} is registered {1}. Latest departure is {2}.", camId, arr, dep);
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("The cabin is full! Choose another one.");
+                    Console.WriteLine("Cabin is full! Choose another one.");
                     Console.ReadLine();
                     Console.Clear();
                     CamperArrival();
                 }
-
-                db.SaveChanges();
             }
         }
 
         public static void CounselorArrival()
         {
-            using (var db = new EFContext())
-            {
+            
                 HandleTables.ReadCounselors();
                 Console.WriteLine("\nEnter the counselor Id:");
                 int conId = int.Parse(Console.ReadLine());
@@ -67,23 +105,39 @@ namespace CampSleepaway1
                 var arr = DateTime.Now;
                 var dep = DateTime.Now.AddMonths(1);
 
-                Cabin cabin = new Cabin();
-                foreach (var item in db.CamperStays)
-                {
-                    cabin.CapacityCounselor++;
-                }
-                if (cabin.CapacityCounselor < 2)
-                {
-                    var cs = new CounselorStay()
-                    {
-                        CounselorId = conId,
-                        CabinId = cabId,
-                        ArrivalDates = arr,
-                        DepartureDates = dep
+            using (dbcon = new SqlConnection(connectionString))
+            {
+                string query =
+                    $"SELECT COUNT(*) FROM CounselorStays WHERE cabinId = {cabId};";
 
-                    };
-                    db.Add(cs);
-                    Console.WriteLine("Counselor {0} is registered {1}. Departure {2}", conId, arr, dep);
+                int countCabinCounselor = 0;
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        countCabinCounselor = (int)reader[0];
+                    }
+                }
+                dbcon.Close();
+
+                if (countCabinCounselor == 0)
+                {
+                    using (var db = new EFContext())
+                    {
+                        var cs = new CounselorStay()
+                        {
+                            CounselorId = conId,
+                            CabinId = cabId,
+                            ArrivalDates = arr,
+                            DepartureDates = dep
+
+                        };
+                        db.Add(cs);
+                        db.SaveChanges();
+                        Console.WriteLine("Counselor {0} is registered {1}. Latest departure is {2}.", conId, arr, dep);
+                    }
                 }
                 else
                 {
@@ -92,9 +146,6 @@ namespace CampSleepaway1
                     Console.Clear();
                     CounselorArrival();
                 }
-
-
-                db.SaveChanges();
             }
         }
         public static void VisitorArrival()

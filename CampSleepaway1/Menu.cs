@@ -101,7 +101,7 @@ namespace CampSleepaway1
                     Console.ReadLine();
                     break;
                 case 7:
-                    HandleTables.SearchCamperAndKins();
+                    HandleTables.SearchCamperAndKinsByCabin();
                     Console.ReadLine();
                     break;
                 default:

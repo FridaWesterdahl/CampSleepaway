@@ -104,7 +104,7 @@ namespace CampSleepaway1
                 dbcon.Close();
             }
         }
-        public static void SearchCamperAndKins()
+        public static void SearchCamperAndKinsByCabin()
         {
             ReadAllCabins();
             Console.WriteLine("\nEnter the cabin Id:");
