@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.PortableExecutable;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,60 +29,33 @@ namespace CampSleepaway1
             var arr = DateTime.Now;
             var dep = DateTime.Now.AddMonths(1);
 
-            using (dbcon = new SqlConnection(connectionString))
+            using (var context = new EFContext())
             {
-                string query =
-              $"SELECT COUNT(*) FROM CamperStays WHERE cabinId = {cabId};";
+                
+                var countCabinCampers = context.CamperStays.Count(x => x.DepartureDates > DateTime.Now && x.CabinId == cabId);
+                var countCabinCounselors = context.CounselorStays.Count(x => x.DepartureDates > DateTime.Now && x.CabinId == cabId);
 
-                int countCabinCampers = 0;
-                SqlCommand command = new SqlCommand(query, dbcon);
-                dbcon.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        countCabinCampers = (int)reader[0];
-                    }  
-                }
-                dbcon.Close();
-
-                string query2 =
-                    $"SELECT COUNT(*) FROM CounselorStays WHERE cabinId = {cabId};";
-
-                int countCabinCounselor = 0;
-                SqlCommand command2 = new SqlCommand(query2, dbcon);
-                dbcon.Open();
-                using (SqlDataReader reader2 = command2.ExecuteReader())
-                {
-                    while (reader2.Read())
-                    {
-                        countCabinCounselor = (int)reader2[0];
-                    }
-                }
                 Console.Clear();
-                Console.WriteLine($"Counselors staying: {countCabinCounselor}\nCampers staying: {countCabinCampers}");
-                dbcon.Close();
+                Console.WriteLine($"Counselors staying: {countCabinCounselors}\nCampers staying: {countCabinCampers}");
 
-                if (countCabinCounselor == 0)
+                if (countCabinCounselors == 0)
                 {
                     Console.WriteLine("You cannot check in without a counselor staying!");
                 }
                 else if (countCabinCampers < 4)
                 {
-                    using (var db = new EFContext())
+                    var cs = new CamperStay()
                     {
-                        var cs = new CamperStay()
-                        {
-                            CamperId = camId,
-                            CabinId = cabId,
-                            ArrivalDates = arr,
-                            DepartureDates = dep
+                        CamperId = camId,
+                        CabinId = cabId,
+                        ArrivalDates = arr,
+                        DepartureDates = dep
 
-                        };
-                        db.Add(cs);
-                        db.SaveChanges();
-                        Console.WriteLine("Camper {0} is registered {1}. Latest departure is {2}.", camId, arr, dep);
-                    }
+                    };
+                    context.CamperStays.Add(cs);
+                    context.SaveChanges();
+                    Console.WriteLine("Camper {0} is registered {1}. Latest departure is {2}.", camId, arr, dep);
+                    
                 }
                 else
                 {
@@ -92,10 +66,52 @@ namespace CampSleepaway1
                 }
             }
         }
+        public static void CamperDeparture()
+        {
+            using (var context = new EFContext())
+            {
+                Console.WriteLine("Cabins and their current stays:\n");
+
+                var query =
+                    (from cams in context.CamperStays
+                     join c in context.Cabins on cams.CabinId equals c.Id
+                     join cam in context.Campers on cams.CamperId equals cam.Id
+                     select new { c, cams, cam })
+                     .Where(x => x.cams.DepartureDates > DateTime.Now)
+                     .Select(x => new
+                     {
+                         CamperId = x.cam.Id + ", " + x.cams.Camper.FirstName + " " + x.cams.Camper.LastName,
+                         CabinId = x.c.Id + ", " + x.c.Name 
+                     })
+                     .OrderBy(x => x.CabinId);
+
+                foreach (var item in query)
+                {
+                    Console.WriteLine(item);
+                }
+
+                Console.WriteLine("\nEnter the camper Id:");
+                int camId = int.Parse(Console.ReadLine());
+                Console.WriteLine("Enter the cabin Id:");
+                int cabId = int.Parse(Console.ReadLine());
+
+                var departureDateUpdate = context.CamperStays
+                    .FirstOrDefault(x => x.CabinId == cabId && x.CamperId == camId && x.DepartureDates > DateTime.Now);
+
+                departureDateUpdate.DepartureDates = DateTime.Now;
+
+                context.CamperStays.Update(departureDateUpdate);
+                context.SaveChanges();
+                Console.WriteLine("Camper {0} is registered departured {1}.\n" +
+                    "Welcome back another time!", camId, DateTime.Now);
+            }
+        }
 
         public static void CounselorArrival()
         {
-            
+            using (var context = new EFContext())
+            {
+
                 HandleTables.ReadCounselors();
                 Console.WriteLine("\nEnter the counselor Id:");
                 int conId = int.Parse(Console.ReadLine());
@@ -105,24 +121,9 @@ namespace CampSleepaway1
                 var arr = DateTime.Now;
                 var dep = DateTime.Now.AddMonths(1);
 
-            using (dbcon = new SqlConnection(connectionString))
-            {
-                string query =
-                    $"SELECT COUNT(*) FROM CounselorStays WHERE cabinId = {cabId};";
+                var countCabinCounselors = context.CounselorStays.Count(x => x.DepartureDates > DateTime.Now && x.CabinId == cabId);
 
-                int countCabinCounselor = 0;
-                SqlCommand command = new SqlCommand(query, dbcon);
-                dbcon.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        countCabinCounselor = (int)reader[0];
-                    }
-                }
-                dbcon.Close();
-
-                if (countCabinCounselor == 0)
+                if (countCabinCounselors == 0)
                 {
                     using (var db = new EFContext())
                     {
@@ -136,7 +137,7 @@ namespace CampSleepaway1
                         };
                         db.Add(cs);
                         db.SaveChanges();
-                        Console.WriteLine("Counselor {0} is registered {1}. Latest departure is {2}.", conId, arr, dep);
+                        Console.WriteLine("Counselor {0} is registered {1}. Departure is {2}.", conId, arr, dep);
                     }
                 }
                 else
@@ -152,42 +153,62 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
-                HandleTables.ShowNextOfKinRelations();
-                Console.WriteLine("Enter the camper Id you want to visit:");
+                Console.WriteLine("Current staying campers and their next of kins:\n");
+
+                var q =
+                    (from cnok in db.CamperNextOfKins
+                     join c in db.Campers on cnok.CamperId equals c.Id
+                     join nok in db.NextOfKins on cnok.NextOfKinId equals nok.Id
+                     join cams in db.CamperStays on c.Id equals cams.CamperId
+                          select new { c, nok, cams })
+                     .Where(x => x.cams.DepartureDates > DateTime.Now)
+                     .Select(x => new {
+                         CamperId = x.c.Id + " " + x.c.FirstName + " " + x.c.LastName,
+                         NextOfKinId = x.nok.Id + " " + x.nok.FirstName + " " + x.nok.LastName
+                     });
+
+                foreach (var item in q)
+                {
+                    Console.WriteLine(item);
+                }
+
+                Console.WriteLine("\nEnter the camper Id you want to visit:");
                 int camId = int.Parse(Console.ReadLine());
                 Console.WriteLine("Enter the next of kin Id:");
                 int kinId = int.Parse(Console.ReadLine());
+                Console.WriteLine("For how long do you want to vistit?\n1, 2 or max 3 hours. Enter below:");
+                int time = int.Parse(Console.ReadLine());
 
-                //var earliestVisit = DateTime.SpecifyKind()
-
-                var visit = new Visit()
+                if (DateTime.Now.Hour < 10 || DateTime.Now.Hour >= 20)
                 {
-                    CamperId = camId,
-                    NextOfKinId = kinId,
-                    MaxVisitTime = 3,
-                    EarliestVisit = DateTime.MinValue
-
-                };
-                db.Add(visit);
-                db.SaveChanges();
-            }
-        }
-        public static void VisitorDeparture()
-        {
-            using (var db = new EFContext())
-            {
-                HandleTables.ShowNextOfKinRelations();
-                Console.WriteLine("Enter the counselor Id:");
-                int conId = int.Parse(Console.ReadLine());
-
-                var visit = new Visit()
+                    Console.WriteLine("Visit hours are between 10-20.");
+                    return;
+                }
+               
+                if (time > 3)
                 {
-                
-                    DepartureDates = DateTime.Now
+                    Console.WriteLine("You can only visit max 3 hours.");
+                }
+                else 
+                {
+                    var visit = new Visit()
+                    {
+                        CamperId = camId,
+                        NextOfKinId = kinId,
+                        VisitTime = time,
+                        ArrivalDates = DateTime.Now,
+                        DepartureDates = DateTime.Now.AddHours(time)
 
-                };
-                db.Add(visit);
-                db.SaveChanges();
+                    };
+                    if (visit.DepartureDates.Hour > 20)
+                    {
+                        visit.DepartureDates = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 59, 00);
+                    }
+
+                    db.Add(visit);
+                    db.SaveChanges();
+                    Console.WriteLine($"Visitor arrived {DateTime.Now}. Leaving {DateTime.Now.AddHours(time)}.");
+                }
             }
         }
 

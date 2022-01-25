@@ -266,13 +266,14 @@ namespace CampSleepaway1
         {
             using (var db = new EFContext())
             {
-                Console.WriteLine("Cabins and their stays:");
+                Console.WriteLine("Cabins and their current stays:");
 
                 var query =
                     (from cams in db.CamperStays
                      join c in db.Cabins on cams.CabinId equals c.Id
                      join cons in db.CounselorStays on c.Id equals cons.CounselorId
                      select new { c, cams, cons })
+                     .Where(x => x.cams.DepartureDates > DateTime.Now)
                      .Select(x => new
                      {
                          Cabin = x.c.Name,

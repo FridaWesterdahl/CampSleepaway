@@ -24,9 +24,7 @@ namespace CampSleepaway1.Models
         [Column("DepartureDate")]
         public DateTime DepartureDates { get; set; }
 
-        public int MaxVisitTime { get; set; }
-        public DateTime EarliestVisit { get; set; }
-        public DateTime LatestVisit { get; set; }
+        public int VisitTime { get; set; }
 
         public int NextOfKinId { get; set; }
         public virtual NextOfKin NextOfKin { get; set; }

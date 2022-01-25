@@ -30,7 +30,8 @@ namespace CampSleepaway1
                 "[2] Handle counselors\n" +
                 "[3] Handle cabins\n" +
                 "[4] Handle next of kins\n" +
-                "[5] Register an arrival\n");
+                "[5] Register an arrival\n" +
+                "[6] Register an earlier departure for camper");
 
             int number = int.Parse(Console.ReadLine());
             switch (number)
@@ -49,6 +50,10 @@ namespace CampSleepaway1
                     break;
                case 5:
                     HandleArrivals();
+                    break;
+                case 6:
+                    TimeManager.CamperDeparture();
+                    Console.ReadLine();
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -254,5 +259,6 @@ namespace CampSleepaway1
                     break;
             }
         }
+
     }
 }
