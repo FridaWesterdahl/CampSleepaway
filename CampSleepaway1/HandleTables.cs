@@ -348,7 +348,7 @@ namespace CampSleepaway1
                     }
                     Console.ReadLine();
 
-                    string query = $"SELECT COUNT(*) FROM CounselorStays WHERE counselorId = {Id};";
+                    string query = $"SELECT COUNT(*) FROM CounselorStays WHERE counselorId = {Id} AND DepartureDate > SYSDATETIME();";
                     int counselorStays = 0;
 
                     SqlCommand command = new SqlCommand(query, dbcon);
@@ -407,7 +407,7 @@ namespace CampSleepaway1
                             Console.WriteLine("Cabin: {0}, Camper: {1}, Counselor: {2}", Cabin, Camper, Counselor);
                         }
                     }
-                    string query = $"SELECT COUNT(*) FROM CounselorStays WHERE counselorId = {Id};";
+                    string query = $"SELECT COUNT(*) FROM CounselorStays WHERE counselorId = {Id} AND DepartureDate > SYSDATETIME();";
                     int counselorStays = 0;
 
                     SqlCommand command = new SqlCommand(query, dbcon);
