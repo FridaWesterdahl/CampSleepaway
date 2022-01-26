@@ -290,8 +290,8 @@ namespace CampSleepaway1
                      {
                          Camper = x.cams.Camper.FirstName + " " + x.cams.Camper.LastName,
                          Cabin = x.c.Name,
-                         Counselor = x.cons.Counselor.FirstName    
-                     })
+                         Counselor = x.cons.Counselor.FirstName
+                     });
 
                     foreach (var item in query)
                     {
