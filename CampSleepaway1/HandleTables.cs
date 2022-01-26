@@ -321,14 +321,15 @@ namespace CampSleepaway1
                     int Id = int.Parse(Console.ReadLine());
 
                     string query2 =
-                  $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
-                  $"FROM Campers cam " +
-                  $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
-                  $"JOIN Cabins c on cams.CabinId = c.CabinId " +
-                  $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
+                  $"select c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
+                  $"from Cabins c " +
+                  $"join CounselorStays cons on c.CabinId = cons.CabinId " +
+                  $"join CamperStays cams on c.CabinId = cams.CabinId " +
                   $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
-                  $"WHERE c.CabinId = {Id} AND cams.DepartureDate > SYSDATETIME() AND cons.DepartureDate > SYSDATETIME() " +
-                  $"ORDER BY c.CabinName";
+                  $"join Campers cam on cams.CamperId = cam.CamperId " +
+                  $"where cons.DepartureDate > SYSDATETIME() " +
+                  $"and cams.DepartureDate > SYSDATETIME() " +
+                  $"and c.CabinId = {Id} ";
 
                     SqlCommand command2 = new SqlCommand(query2, dbcon);
                     dbcon.Open();
@@ -382,14 +383,15 @@ namespace CampSleepaway1
                     int Id = int.Parse(Console.ReadLine());
 
                     string query2 =
-                  $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
-                  $"FROM Campers cam " +
-                  $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
-                  $"JOIN Cabins c on cams.CabinId = c.CabinId " +
-                  $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
+                  $"select c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
+                  $"from Cabins c " +
+                  $"join CounselorStays cons on c.CabinId = cons.CabinId " +
+                  $"join CamperStays cams on c.CabinId = cams.CabinId " +
                   $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
-                  $"WHERE con.CounselorId = {Id} AND cons.DepartureDate > SYSDATETIME() AND cams.DepartureDate > SYSDATETIME() " +
-                  $"ORDER BY c.CabinName";
+                  $"join Campers cam on cams.CamperId = cam.CamperId " +
+                  $"where cons.DepartureDate > SYSDATETIME() " +
+                  $"and cams.DepartureDate > SYSDATETIME() " +
+                  $"and cons.CounselorId = {Id} ";
 
                     SqlCommand command2 = new SqlCommand(query2, dbcon);
                     dbcon.Open();
