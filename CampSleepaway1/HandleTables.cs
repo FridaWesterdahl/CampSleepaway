@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CampSleepaway1.Models;
 using Microsoft.Data.SqlClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CampSleepaway1
 {
@@ -117,7 +118,7 @@ namespace CampSleepaway1
           $"JOIN NextOfKins nok on cnok.NextOfKinId = nok.NextOfKinId " +
           $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
           $"JOIN Cabins c on cams.CabinId = c.CabinId " +
-          $"WHERE c.CabinId = {Id} " +
+          $"WHERE c.CabinId = {Id} AND DepartureDate > SYSDATETIME() " +
           $"ORDER BY c.CabinName";
 
             dbcon = new SqlConnection(connectionString);
@@ -269,15 +270,18 @@ namespace CampSleepaway1
                 Console.WriteLine("Cabins and their current stays:");
 
                 var query =
-                    (from cams in db.CamperStays
-                     join c in db.Cabins on cams.CabinId equals c.Id
-                     join cons in db.CounselorStays on c.Id equals cons.CounselorId
-                     select new { c, cams, cons })
-                     .Where(x => x.cams.DepartureDates > DateTime.Now)
+                    (from c in db.Cabins
+                     join cons in db.CounselorStays on c.Id equals cons.CabinId
+                     join cams in db.CamperStays on c.Id equals cams.CabinId
+                     join con in db.Counselors on cons.CounselorId equals con.Id
+                     join cam in db.Campers on cams.CamperId equals cam.Id
+                     where cons.DepartureDates > DateTime.Now
+                     where cams.DepartureDates > DateTime.Now
+                     select new { c, cams, cons, con })
                      .Select(x => new
                      {
                          Cabin = x.c.Name,
-                         Counselor = x.cons.Counselor.FirstName,
+                         Counselor = x.con.FirstName,
                          Camper = x.cams.Camper.FirstName + " " + x.cams.Camper.LastName
                      })
                      .OrderBy(x => x.Cabin);
@@ -310,77 +314,120 @@ namespace CampSleepaway1
 
             static void ByCabinId()
             {
-                ReadAllCabins();
-                Console.WriteLine("\nEnter the cabins Id:");
-                int Id = int.Parse(Console.ReadLine());
-
-                string query =
-              $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
-              $"FROM Campers cam " +
-              $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
-              $"JOIN Cabins c on cams.CabinId = c.CabinId " +
-              $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
-              $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
-              $"WHERE c.CabinId = {Id} " +
-              $"ORDER BY c.CabinName";
-
-                dbcon = new SqlConnection(connectionString);
-                SqlCommand command = new SqlCommand(query, dbcon);
-                dbcon.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-
-                using (reader)
+                using (SqlConnection dbcon = new SqlConnection(connectionString))
                 {
-                    while (reader.Read())
-                    {
-                        string Cabin = (string)reader["Cabin"];
-                        string Camper = (string)reader["Camper"];
-                        string Counselor = (string)reader["Counselor"];
-                        Console.WriteLine("Cabin: {0}, Camper: {1}, Counselor: {2}", Cabin, Camper, Counselor);
-                    }
-                }
-                int returnValue = command.ExecuteNonQuery();
+                    ReadAllCabins();
+                    Console.WriteLine("\nEnter the cabins Id:");
+                    int Id = int.Parse(Console.ReadLine());
 
-                dbcon.Close();
-                Console.ReadLine();
+                    string query2 =
+                  $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
+                  $"FROM Campers cam " +
+                  $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
+                  $"JOIN Cabins c on cams.CabinId = c.CabinId " +
+                  $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
+                  $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
+                  $"WHERE c.CabinId = {Id} AND cams.DepartureDate > SYSDATETIME() AND cons.DepartureDate > SYSDATETIME() " +
+                  $"ORDER BY c.CabinName";
+
+                    SqlCommand command2 = new SqlCommand(query2, dbcon);
+                    dbcon.Open();
+                    SqlDataReader reader2 = command2.ExecuteReader();
+
+
+                    using (reader2)
+                    {
+                        while (reader2.Read())
+                        {
+                            string Cabin = (string)reader2["Cabin"];
+                            string Camper = (string)reader2["Camper"];
+                            string Counselor = (string)reader2["Counselor"];
+                            Console.WriteLine("Cabin: {0}, Camper: {1}, Counselor: {2}", Cabin, Camper, Counselor);
+                        }
+                    }
+                    Console.ReadLine();
+
+                    string query = $"SELECT COUNT(*) FROM CounselorStays WHERE counselorId = {Id};";
+                    int counselorStays = 0;
+
+                    SqlCommand command = new SqlCommand(query, dbcon);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    using (reader)
+                    {
+                        while (reader.Read())
+                        {
+                            counselorStays = (int)reader[0];
+                        }
+                    }
+
+                    if (counselorStays == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("There is no counselor staying!");
+                        Console.ResetColor();  
+                    }
+                    dbcon.Close();
+                    
+                }
+                
+                    
             }
             static void ByCounselorId()
             {
-                ReadCounselors();
-                Console.WriteLine("\nEnter the counselors Id:");
-                int Id = int.Parse(Console.ReadLine());
-
-                string query =
-              $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
-              $"FROM Campers cam " +
-              $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
-              $"JOIN Cabins c on cams.CabinId = c.CabinId " +
-              $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
-              $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
-              $"WHERE con.CounselorId = {Id} " +
-              $"ORDER BY c.CabinName";
-
-                dbcon = new SqlConnection(connectionString);
-                SqlCommand command = new SqlCommand(query, dbcon);
-                dbcon.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-
-                using (reader)
+                using (SqlConnection dbcon = new SqlConnection(connectionString))
                 {
-                    while (reader.Read())
-                    {
-                        string Cabin = (string)reader["Cabin"];
-                        string Camper = (string)reader["Camper"];
-                        string Counselor = (string)reader["Counselor"];
-                        Console.WriteLine("Cabin: {0}, Camper: {1}, Counselor: {2}", Cabin, Camper, Counselor);
-                    }
-                }
-                int returnValue = command.ExecuteNonQuery();
+                    ReadCounselors();
+                    Console.WriteLine("\nEnter the counselors Id:");
+                    int Id = int.Parse(Console.ReadLine());
 
-                dbcon.Close();
-                Console.ReadLine();
+                    string query2 =
+                  $"SELECT c.CabinName AS Cabin, cam.FirstName + ' ' + cam.LastName AS Camper, con.FirstName + ' ' + con.LastName AS Counselor " +
+                  $"FROM Campers cam " +
+                  $"JOIN CamperStays cams on cam.CamperId = cams.CamperId " +
+                  $"JOIN Cabins c on cams.CabinId = c.CabinId " +
+                  $"JOIN CounselorStays cons on c.CabinId = cons.CounselorId " +
+                  $"JOIN Counselors con on cons.CounselorId = con.CounselorId " +
+                  $"WHERE con.CounselorId = {Id} AND cons.DepartureDate > SYSDATETIME() AND cams.DepartureDate > SYSDATETIME() " +
+                  $"ORDER BY c.CabinName";
+
+                    SqlCommand command2 = new SqlCommand(query2, dbcon);
+                    dbcon.Open();
+                    SqlDataReader reader2 = command2.ExecuteReader();
+
+                    using (reader2)
+                    {
+                        while (reader2.Read())
+                        {
+                            string Cabin = (string)reader2["Cabin"];
+                            string Camper = (string)reader2["Camper"];
+                            string Counselor = (string)reader2["Counselor"];
+                            Console.WriteLine("Cabin: {0}, Camper: {1}, Counselor: {2}", Cabin, Camper, Counselor);
+                        }
+                    }
+                    string query = $"SELECT COUNT(*) FROM CounselorStays WHERE counselorId = {Id};";
+                    int counselorStays = 0;
+
+                    SqlCommand command = new SqlCommand(query, dbcon);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    using (reader)
+                    {
+                        while (reader.Read())
+                        {
+                            counselorStays = (int)reader[0];
+                        }
+                    }
+
+                    if (counselorStays == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"There is no counselor {Id} staying!");
+                        Console.ResetColor();
+                        ByCounselorId();
+                    }
+                    dbcon.Close();
+                }
             }
 
         }
@@ -397,7 +444,8 @@ namespace CampSleepaway1
                      join nok in db.NextOfKins on cnok.NextOfKinId equals nok.Id
                      select new { c, nok })
                      .Select(x => new { Name = x.c.FirstName + " " + x.c.LastName,
-                         NextOfKin = x.nok.FirstName + " " + x.nok.LastName, Phone = x.nok.PhoneNumber });
+                         NextOfKin = x.nok.FirstName + " " + x.nok.LastName, Phone = x.nok.PhoneNumber })
+                     .OrderBy(x => x.Name);
 
                 foreach (var item in q)
                 {
@@ -414,7 +462,7 @@ namespace CampSleepaway1
                 var q =
                     (from nok in db.NextOfKins
                      select new { nok })
-                     .Select(x => new { Name = x.nok.FirstName + " " + x.nok.LastName, Phone = x.nok.PhoneNumber });
+                     .Select(x => new { Id = x.nok.Id + " " +  x.nok.FirstName + " " + x.nok.LastName, Phone = x.nok.PhoneNumber });
 
                 foreach (var item in q)
                 {
@@ -440,41 +488,59 @@ namespace CampSleepaway1
                 string phone = Console.ReadLine();
 
                 string query =
-                    $"UPDATE NextOfKins SET FirstName = {firstName}, LastName = {lastName}, PhoneNumber = {phone}) " +
+                    $"UPDATE NextOfKins SET FirstName = '{firstName}', LastName = '{lastName}', PhoneNumber = '{phone}' " +
                     $"WHERE NextOfKinId = {Id};";
-                SqlCommand command = new SqlCommand(query);
+                dbcon = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand(query, dbcon);
+                dbcon.Open();
 
-                db.SaveChanges();
+                int returnValue = command.ExecuteNonQuery();
                 Console.WriteLine("Kin {0} {1} is updated!", firstName, lastName);
+                dbcon.Close();
+                db.SaveChanges();
             }
         }
         public static void InsertNextOfKin()
         {
             using (var db = new EFContext())
             {
-                Console.WriteLine("Firstname:" +
+                Kin();
+                Relation();
+                void Kin()
+                {
+                    Console.WriteLine("Firstname:" +
                            "\n-----------------------------");
-                string firstName = Console.ReadLine();
-                Console.WriteLine("Lastname:" +
-                    "\n-----------------------------");
-                string lastName = Console.ReadLine();
-                Console.WriteLine("Phonenumber:" +
-                    "\n-----------------------------");
-                string phone = Console.ReadLine();
+                    string firstName = Console.ReadLine();
+                    Console.WriteLine("Lastname:" +
+                        "\n-----------------------------");
+                    string lastName = Console.ReadLine();
+                    Console.WriteLine("Phonenumber:" +
+                        "\n-----------------------------");
+                    string phone = Console.ReadLine();
 
-                string query =
-                    $"INSERT INTO NextOfKins (FirstName, LastName, PhoneNumber) " +
-                    $"VALUES ('{firstName}', '{lastName}', '{phone}');";
-                SqlCommand command = new SqlCommand(query);
+                    string query =
+                        $"INSERT INTO NextOfKins (FirstName, LastName, PhoneNumber) " +
+                        $"VALUES ('{firstName}', '{lastName}', '{phone}');";
 
-                Console.WriteLine("Kin {0} {1} is inserted!", firstName, lastName);
-                ShowNextOfKins();
-                Console.WriteLine("We need to know your relation with a camper.\n" +
-                    "Enter the next of kin Id:");
-                int kinId = Int32.Parse(Console.ReadLine());
-                ReadCampers();
-                Console.WriteLine("Then enter the Id of the camper:");
-                int camId = Int32.Parse(Console.ReadLine());
+                    dbcon = new SqlConnection(connectionString);
+                    SqlCommand command = new SqlCommand(query, dbcon);
+                    dbcon.Open();
+
+                    int returnValue = command.ExecuteNonQuery();
+                    Console.WriteLine("Kin {0} {1} is inserted!", firstName, lastName);
+                    Console.ReadKey();
+                    dbcon.Close();
+                }
+                void Relation()
+                {
+                    Console.Clear();
+                    ShowNextOfKins();
+                    Console.WriteLine("We need to know your relation with a camper.\n" +
+                        "Enter the next of kin Id:");
+                    int kinId = Int32.Parse(Console.ReadLine());
+                    ReadCampers();
+                    Console.WriteLine("Then enter the Id of the camper:");
+                    int camId = Int32.Parse(Console.ReadLine());
 
                     var cnok = new CamperNextOfKin()
                     {
@@ -482,10 +548,14 @@ namespace CampSleepaway1
                         NextOfKinId = kinId
                     };
                     db.Add(cnok);
-                Console.WriteLine($"Relation between kin Id: {kinId}, camper Id: {camId} is registered.");
+                    Console.WriteLine($"Relation between kin Id: {kinId}, camper Id: {camId} is registered.");
 
-                db.SaveChanges();
+                    db.SaveChanges();
+                }
+                
+                
             }
+               
         }
        
     }

@@ -34,15 +34,16 @@ namespace CampSleepaway1
                 
                 var countCabinCampers = context.CamperStays.Count(x => x.DepartureDates > DateTime.Now && x.CabinId == cabId);
                 var countCabinCounselors = context.CounselorStays.Count(x => x.DepartureDates > DateTime.Now && x.CabinId == cabId);
+                var alreadyStaying = context.CamperStays.Count(x => x.DepartureDates > DateTime.Now && x.CamperId == camId);
 
                 Console.Clear();
-                Console.WriteLine($"Counselors staying: {countCabinCounselors}\nCampers staying: {countCabinCampers}");
+                Console.WriteLine($"Counselors staying: {countCabinCounselors}\nCampers staying: {countCabinCampers}\n");
 
                 if (countCabinCounselors == 0)
                 {
                     Console.WriteLine("You cannot check in without a counselor staying!");
                 }
-                else if (countCabinCampers < 4)
+                else if (countCabinCampers < 4 && alreadyStaying == 0)
                 {
                     var cs = new CamperStay()
                     {
@@ -59,7 +60,8 @@ namespace CampSleepaway1
                 }
                 else
                 {
-                    Console.WriteLine("Cabin is full! Choose another one.");
+                    Console.WriteLine($"Cabin is either full or Camper {camId} is already staying in a cabin.\n" +
+                        $"Choose another one cabin or camper.");
                     Console.ReadLine();
                     Console.Clear();
                     CamperArrival();
@@ -149,6 +151,75 @@ namespace CampSleepaway1
                 }
             }
         }
+        public static void CounselorUpdate()
+        {
+            using (var context = new EFContext())
+            {
+                Console.WriteLine("Cabins and their current stays:\n");
+
+                var query =
+                    (from cons in context.CounselorStays
+                     join c in context.Cabins on cons.CabinId equals c.Id
+                     join con in context.Counselors on cons.CounselorId equals con.Id
+                     select new { c, cons, con })
+                     .Where(x => x.cons.DepartureDates > DateTime.Now)
+                     .Select(x => new
+                     {
+                         CounselorId = x.con.Id + ", " + x.cons.Counselor.FirstName + " " + x.cons.Counselor.LastName,
+                         CabinId = x.c.Id + ", " + x.c.Name
+                     })
+                     .OrderBy(x => x.CabinId);
+
+                foreach (var item in query)
+                {
+                    Console.WriteLine(item);
+                }
+
+                Console.WriteLine("\nEnter the counselor Id that is going home:");
+                int conId = int.Parse(Console.ReadLine());
+                Console.WriteLine("Enter the cabin Id:");
+                int cabId = int.Parse(Console.ReadLine());
+
+                var departureDateUpdate = context.CounselorStays
+                    .FirstOrDefault(x => x.CabinId == cabId && x.CounselorId == conId && x.DepartureDates > DateTime.Now);
+
+                departureDateUpdate.DepartureDates = DateTime.Now;
+
+                context.CounselorStays.Update(departureDateUpdate);
+                context.SaveChanges();
+                Console.WriteLine("Camper {0} is registered departured {1}.\n" +
+                    "Welcome back to your next shift!", conId, DateTime.Now);
+                Console.ReadKey();
+                Console.Clear();
+
+                HandleTables.ReadCounselors();
+                Console.WriteLine("\nEnter the new counselor Id:");
+                int conId2 = int.Parse(Console.ReadLine());
+                var arr = DateTime.Now;
+                var dep = DateTime.Now.AddMonths(1);
+
+                var countCabinCounselors = context.CounselorStays.Count(x => x.DepartureDates > DateTime.Now && x.CabinId == cabId);
+
+                if (countCabinCounselors == 0)
+                {
+                    using (var db = new EFContext())
+                    {
+                        var cs = new CounselorStay()
+                        {
+                            CounselorId = conId2,
+                            CabinId = cabId,
+                            ArrivalDates = arr,
+                            DepartureDates = dep
+
+                        };
+                        db.Add(cs);
+                        db.SaveChanges();
+                        Console.WriteLine("Counselor {0} is registered {1} in cabin {3}. Departure is {2}.", conId2, arr, dep, cabId);
+                    }
+                }
+
+            }
+        }
         public static void VisitorArrival()
         {
             using (var db = new EFContext())
@@ -202,12 +273,31 @@ namespace CampSleepaway1
                     };
                     if (visit.DepartureDates.Hour > 20)
                     {
-                        visit.DepartureDates = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 59, 00);
+                        visit.DepartureDates = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 59, 59);
                     }
 
                     db.Add(visit);
                     db.SaveChanges();
                     Console.WriteLine($"Visitor arrived {DateTime.Now}. Leaving {DateTime.Now.AddHours(time)}.");
+
+                    var query =
+                    (from cams in db.CamperStays
+                     join c in db.Cabins on cams.CabinId equals c.Id
+                     join cons in db.CounselorStays on c.Id equals cons.CounselorId
+                     select new { c, cams, cons })
+                     .Where(x => x.cams.DepartureDates > DateTime.Now && x.cams.CamperId == camId)
+                     .Select(x => new
+                     {
+                         Cabin = x.c.Name,
+                         Counselor = x.cons.Counselor.FirstName,
+                         Camper = x.cams.Camper.FirstName + " " + x.cams.Camper.LastName
+                     })
+                     .OrderBy(x => x.Cabin);
+
+                    foreach (var item in query)
+                    {
+                        Console.WriteLine(item);
+                    }
                 }
             }
         }
