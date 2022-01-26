@@ -17,6 +17,8 @@ namespace CampSleepaway1
             LoadCabins();
             LoadNextOfKins();
             LoadNextOfKinRelations();
+            LoadVisits();
+            LoadStays();
         }
         public void LoadCampers()
         {
@@ -106,12 +108,41 @@ namespace CampSleepaway1
                 db.CamperNextOfKins.Add(new CamperNextOfKin { CamperId = 14, NextOfKinId = 5 });
                 db.CamperNextOfKins.Add(new CamperNextOfKin { CamperId = 15, NextOfKinId = 2 });
                 db.CamperNextOfKins.Add(new CamperNextOfKin { CamperId = 16, NextOfKinId = 5 });
-                db.CamperNextOfKins.Add(new CamperNextOfKin { CamperId = 1004, NextOfKinId = 5 });
-                db.CamperNextOfKins.Add(new CamperNextOfKin { CamperId = 1005, NextOfKinId = 5 });
+                db.CamperNextOfKins.Add(new CamperNextOfKin { CamperId = 17, NextOfKinId = 5 });
+                db.CamperNextOfKins.Add(new CamperNextOfKin { CamperId = 18, NextOfKinId = 5 });
 
                 db.SaveChanges();
             }
 
+        }
+        public void LoadVisits()
+        {
+            using (var db = new EFContext())
+            {
+                db.Visits.Add(new Visit{ ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddHours(1), VisitTime = 1, CamperId = 1, NextOfKinId = 1 });
+                db.Visits.Add(new Visit { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddHours(2), VisitTime = 2, CamperId = 2, NextOfKinId = 4 });
+                db.Visits.Add(new Visit { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddHours(3), VisitTime = 3, CamperId = 4, NextOfKinId = 2 });
+
+                db.SaveChanges();
+            }
+
+        }
+        public void LoadStays()
+        {
+            using (var db = new EFContext())
+            {
+                db.CounselorStays.Add(new CounselorStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CounselorId = 1, CabinId = 1 });
+                db.CounselorStays.Add(new CounselorStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CounselorId = 2, CabinId = 2 });
+                db.CounselorStays.Add(new CounselorStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CounselorId = 3, CabinId = 3 });
+                db.CounselorStays.Add(new CounselorStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CounselorId = 4, CabinId = 4 });
+
+                db.CamperStays.Add(new CamperStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CamperId = 1, CabinId = 1 });
+                db.CamperStays.Add(new CamperStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CamperId = 2, CabinId = 2 });
+                db.CamperStays.Add(new CamperStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CamperId = 3, CabinId = 3 });
+                db.CamperStays.Add(new CamperStay { ArrivalDates = DateTime.Now, DepartureDates = DateTime.Now.AddMonths(1), CamperId = 4, CabinId = 4 });
+
+                db.SaveChanges();
+            }
         }
 
     }

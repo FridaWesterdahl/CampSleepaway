@@ -271,7 +271,7 @@ namespace CampSleepaway1
                         DepartureDates = DateTime.Now.AddHours(time)
 
                     };
-                    if (visit.DepartureDates.Hour > 20)
+                    if (visit.DepartureDates.Hour >= 20)
                     {
                         visit.DepartureDates = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 19, 59, 59);
                     }
@@ -281,16 +281,16 @@ namespace CampSleepaway1
                     Console.WriteLine($"Visitor arrived {DateTime.Now}. Leaving {DateTime.Now.AddHours(time)}.");
 
                     var query =
-                    (from cams in db.CamperStays
-                     join c in db.Cabins on cams.CabinId equals c.Id
+                    (from c in db.Cabins
+                     join cams in db.CamperStays on c.Id equals cams.CabinId
                      join cons in db.CounselorStays on c.Id equals cons.CounselorId
                      select new { c, cams, cons })
                      .Where(x => x.cams.DepartureDates > DateTime.Now && x.cams.CamperId == camId)
                      .Select(x => new
                      {
+                         Camper = x.cams.Camper.FirstName + " " + x.cams.Camper.LastName,
                          Cabin = x.c.Name,
-                         Counselor = x.cons.Counselor.FirstName,
-                         Camper = x.cams.Camper.FirstName + " " + x.cams.Camper.LastName
+                         Counselor = x.cons.Counselor.FirstName    
                      })
                      .OrderBy(x => x.Cabin);
 
