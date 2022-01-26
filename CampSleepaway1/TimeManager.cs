@@ -292,7 +292,6 @@ namespace CampSleepaway1
                          Cabin = x.c.Name,
                          Counselor = x.cons.Counselor.FirstName    
                      })
-                     .OrderBy(x => x.Cabin);
 
                     foreach (var item in query)
                     {
